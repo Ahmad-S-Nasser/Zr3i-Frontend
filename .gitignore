@@ -7,3 +7,4 @@ src/styles/tokens.css
 .vite/
 coverage/
 
+src/styles/theme.css
