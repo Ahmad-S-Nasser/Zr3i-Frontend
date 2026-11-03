@@ -1,4 +1,4 @@
-﻿# Zr3i frontend
+# Zr3i frontend
 
 React + Vite + TypeScript client for the Zr3i platform (API in the Zr3i-Backend repo). English and Arabic (RTL) everywhere. Public marketing pages must be SEO and AEO ready; see docs/seo-migration.md. AI services are built externally, not here.
 
@@ -7,7 +7,7 @@ React + Vite + TypeScript client for the Zr3i platform (API in the Zr3i-Backend 
 2. Every string is in `src/i18n/messages.ts` in English and Arabic. No hardcoded UI text. Arabic is a draft until a native speaker reviews it.
 3. Logical CSS properties only (start/end, inline/block), never left/right. Ids, numbers, dates and hashes are `dir="ltr"`.
 4. Words that never appear: approve, reject, recommend, score, rating, risk (in R0), safe, good, bad, passed, failed. No ranking or "top risk" view. Bands only in the risk module, always with letter, word, percentile and the maturity badge.
-5. Every CRI/FRI shows "Specified Â· not calibrated" and the method version. Below resolution is never "no crop".
+5. Every CRI/FRI shows "Specified · not calibrated" and the method version. Below resolution is never "no crop".
 6. WCAG 2.2 AA, 44px targets, focus ring, status never by colour alone.
 7. No secrets in the repo. Lock file committed.
 
