@@ -1,0 +1,38 @@
+{
+  "name": "zr3i-frontend",
+  "version": "0.0.0",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b",
+    "tokens": "node scripts/build-tokens.mjs",
+    "predev": "npm run tokens",
+    "prebuild": "npm run tokens",
+    "pretypecheck": "npm run tokens"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ahmad-S-Nasser/Zr3i-Frontend.git"
+  },
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Ahmad-S-Nasser/Zr3i-Frontend/issues"
+  },
+  "homepage": "https://github.com/Ahmad-S-Nasser/Zr3i-Frontend#readme",
+  "private": true,
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.2.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5"
+  }
+}
