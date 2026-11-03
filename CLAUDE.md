@@ -1,6 +1,6 @@
 # Zr3i frontend
 
-React + Vite + TypeScript client for the Zr3i platform (API in the Zr3i-Backend repo). English and Arabic (RTL) everywhere. Public marketing pages must be SEO and AEO ready; see docs/seo-migration.md. AI services are built externally, not here.
+React + Vite + TypeScript client for the Zr3i platform (API in the Zr3i-Backend repo). English and Arabic (RTL) everywhere. Public marketing pages must be SEO and AEO ready; see the local seo-migration notes. AI services are built externally, not here.
 
 ## Hard rules
 1. Style with Tailwind v4 utilities mapped to the design system. `src/styles/tokens.css` and `theme.css` are generated from `tokens.json` by `npm run tokens`; never hand-write colours, sizes or radii, and use only token-backed utilities (`bg-brand`, `text-ink`, `rounded-lg`). Use logical utilities (`ps-`, `pe-`, `ms-`, `text-start`), never `left`/`right`/`pl`/`pr`. Never invent colours or components without asking.
@@ -12,5 +12,5 @@ React + Vite + TypeScript client for the Zr3i platform (API in the Zr3i-Backend 
 7. No secrets in the repo. Lock file committed.
 
 ## Work
-Follow docs/Zr3i_MVP_Development_Plan_v2.pdf (week 5 UI tasks, W5-x), one task per branch, small commits. Run `npm run build` before saying a task is done. Ask before adding an npm package.
+Follow the MVP Development Plan v2 (kept locally, not in git) (week 5 UI tasks, W5-x), one task per branch, small commits. Run `npm run build` before saying a task is done. Ask before adding an npm package.
 
