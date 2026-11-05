@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { ApiError, api } from '../api/client';
 import type { Members } from '../api/types';
-import { useAuth } from '../auth/AuthProvider';
+import { can, useAuth } from '../auth/AuthProvider';
 import { ErrorLine, Loading, Num, PageHeader } from '../components/ui';
 import { fmtUtc } from '../format';
 import { useApi } from '../hooks/useApi';
@@ -11,8 +11,25 @@ import { hasMessage } from '../i18n/messages';
 /** Users and roles for the organisation: who belongs, in which role, whether their authenticator is set up, and open invitations. */
 export function Users() {
   const { t } = useLang();
-  const { org } = useAuth();
+  const { org, me } = useAuth();
   const { data, error, loading, reload } = useApi<Members>(org ? `/api/organisations/${org.id}/members` : null);
+  const canManage = org !== null && can(org.permissions, 'kernel:users:manage');
+  const [resetFor, setResetFor] = useState<{ email: string; link: string; expiresAt: string } | null>(null);
+  const [resetError, setResetError] = useState<ApiError | null>(null);
+
+  async function reset(userId: string, email: string) {
+    if (!org) return;
+    setResetError(null);
+    setResetFor(null);
+    try {
+      const r = await api<{ token: string; expiresAt: string }>(`/api/organisations/${org.id}/members/${encodeURIComponent(userId)}/reset-authenticator`, { method: 'POST' });
+      setResetFor({ email, link: `${window.location.origin}/#/reset-authenticator?token=${encodeURIComponent(r.token)}`, expiresAt: r.expiresAt });
+      reload();
+    } catch (err) {
+      setResetError(err instanceof ApiError ? err : new ApiError(0, 'network'));
+    }
+  }
+
   const roleName = (key: string, fallback: string) => (hasMessage(`role.${key}`) ? t(`role.${key}` as never) : fallback);
 
   return (
@@ -21,6 +38,17 @@ export function Users() {
       <div className="flex flex-col gap-4">
         {error ? <ErrorLine error={error} onRetry={reload} /> : null}
         {loading ? <Loading /> : null}
+        {resetError ? <ErrorLine error={resetError} /> : null}
+        {resetFor ? (
+          <div className="banner neutral" role="status">
+            <div>
+              <b>{t('usr.reset.title', { email: resetFor.email })}</b>
+              <p className="m-0 text-sm">{t('usr.reset.text')}</p>
+              <div className="mt-1 break-all font-mono text-xs" dir="ltr">{resetFor.link}</div>
+              <p className="muted m-0 text-sm">{t('usr.reset.expires', { when: fmtUtc(resetFor.expiresAt) })}</p>
+            </div>
+          </div>
+        ) : null}
 
         {data ? (
           <>
@@ -33,6 +61,7 @@ export function Users() {
                     <th>{t('usr.col.roles')}</th>
                     <th>{t('usr.col.authenticator')}</th>
                     <th>{t('usr.col.status')}</th>
+                    {canManage ? <th>{t('usr.col.actions')}</th> : null}
                   </tr>
                 </thead>
                 <tbody>
@@ -46,6 +75,7 @@ export function Users() {
                           : m.active ? <span className="pill confirmed">{t('usr.status.active')}</span>
                           : <span className="pill na">{t('usr.status.inactive')}</span>}
                       </td>
+                      {canManage ? <td>{m.active && m.userId !== me?.id ? <button type="button" className="zr-btn" onClick={() => void reset(m.userId, m.email)}>{t('usr.reset')}</button> : null}</td> : null}
                     </tr>
                   ))}
                 </tbody>

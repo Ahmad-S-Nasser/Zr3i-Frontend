@@ -13,6 +13,7 @@ export type Route =
   | { name: 'parcel-evidence'; id: string; season: string | null }
   | { name: 'parcel-imagery'; id: string; season: string | null }
   | { name: 'accept'; token: string | null }
+  | { name: 'reset-authenticator'; token: string | null }
   | { name: 'consent-link'; token: string }
   | { name: 'farms'; season: string | null }
   | { name: 'farm'; farmId: string; season: string }
@@ -28,6 +29,7 @@ export function parseHash(hash: string): Route {
   if (parts[0] === 'sign-in' && parts.length === 1) return { name: 'sign-in' };
   if (parts[0] === 'request-access' && parts.length === 1) return { name: 'request-access' };
   if (parts[0] === 'accept' && parts.length === 1) return { name: 'accept', token: query.get('token') };
+  if (parts[0] === 'reset-authenticator' && parts.length === 1) return { name: 'reset-authenticator', token: query.get('token') };
   if (parts[0] === 'c' && parts.length === 2) return { name: 'consent-link', token: parts[1] };
   if (import.meta.env.DEV && parts[0] === 'dev-login' && parts.length === 1) return { name: 'dev-login' };
   if (parts[0] === 'farms' && parts.length === 1) return { name: 'farms', season: query.get('season') };

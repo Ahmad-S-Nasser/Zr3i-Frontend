@@ -73,6 +73,7 @@ export function Shell({ route, children }: { route: Route; children: ReactNode }
       </header>
 
       <main className="bg-ground px-6 py-6">
+        {org?.isSynthetic ? <div className="banner synthetic mb-4" role="note"><span>{t('syn.bar')}</span></div> : null}
         <div className="mx-auto max-w-(--size-content-max)">{children}</div>
       </main>
     </div>

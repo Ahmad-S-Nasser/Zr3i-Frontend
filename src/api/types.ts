@@ -4,6 +4,8 @@ export interface Organisation {
   id: string;
   name: string;
   accountType: string;
+  /** A synthetic namespace holds illustrative data only; every page says so. */
+  isSynthetic: boolean;
   accountTypeLabelEn: string | null;
   accountTypeLabelAr: string | null;
   /** The account type's preset: where this organisation lands, and what its sidebar lists. */
