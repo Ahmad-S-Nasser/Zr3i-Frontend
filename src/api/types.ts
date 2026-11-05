@@ -224,3 +224,67 @@ export interface SelfSignupType {
   labelAr: string;
   signupFields: SignupField[];
 }
+
+export interface Portfolio {
+  farms: number;
+  parcels: number;
+  areaFeddan: number;
+  governorate: string | null;
+  regions: { name: string; farms: number }[];
+  bands: null;
+  bandsReason: string;
+}
+
+export interface MemberRow {
+  userId: string;
+  email: string;
+  language: string;
+  active: boolean;
+  authenticatorEnrolled: boolean;
+  lockedUntil: string | null;
+  roles: { key: string; name: string }[];
+}
+
+export interface Members {
+  members: MemberRow[];
+  invitations: { email: string; status: 'pending' | 'expired'; expiresAt: string; roles: { key: string; name: string }[] }[];
+  roles: { key: string; name: string }[];
+}
+
+export interface AuditEntry {
+  id: string;
+  at: string;
+  actorEmail: string | null;
+  action: string;
+  objectType: string;
+  objectId: string;
+  outcome: string;
+  purpose: string | null;
+}
+
+export interface AuditPage {
+  nextCursor: string | null;
+  items: AuditEntry[];
+}
+
+export interface Tenant {
+  id: string;
+  name: string;
+  accountType: string;
+  modules: string[];
+  createdAt: string;
+  members: number;
+  farms: number;
+  parcels: number;
+}
+
+export interface AccessRequest {
+  id: string;
+  status: 'pending' | 'approved' | 'rejected';
+  accountType: string;
+  organisationName: string;
+  contactName: string;
+  email: string;
+  purpose: string;
+  language: string;
+}

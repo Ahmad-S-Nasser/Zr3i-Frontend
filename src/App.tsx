@@ -6,6 +6,7 @@ import { FarmRisk } from './pages/FarmRisk';
 import { BeingBuilt } from './pages/BeingBuilt';
 import { Farms } from './pages/Farms';
 import { Section } from './pages/Section';
+import { AcceptInvitation } from './pages/AcceptInvitation';
 import { ConsentLink } from './pages/ConsentLink';
 import { ParcelRisk } from './pages/ParcelRisk';
 import { RequestAccess } from './pages/RequestAccess';
@@ -24,7 +25,7 @@ export function App() {
   // Signed-out visitors go to sign-in; a signed-in user who lands on it goes to the farms.
   useEffect(() => {
     if (loading) return;
-    if (!signedIn && route.name !== 'sign-in' && route.name !== 'dev-login' && route.name !== 'request-access' && route.name !== 'consent-link') go(hrefs.signIn());
+    if (!signedIn && route.name !== 'sign-in' && route.name !== 'dev-login' && route.name !== 'request-access' && route.name !== 'consent-link' && route.name !== 'accept') go(hrefs.signIn());
     if (signedIn && route.name === 'sign-in' && org) go(homeHref(org));
     // The root address opens the account type's home view.
     if (signedIn && route.name === 'home' && org) go(homeHref(org));
@@ -41,6 +42,7 @@ export function App() {
   // Pages anyone can open, signed in or not: the farmer's one-page consent link and Request access.
   if (route.name === 'consent-link') return <ConsentLink key={route.token} token={route.token} />;
   if (route.name === 'request-access' && !signedIn) return <RequestAccess />;
+  if (route.name === 'accept') return <AcceptInvitation token={route.token} />;
 
   if (loading) return <Loading />;
   if (!signedIn) return route.name === 'sign-in' ? <SignIn /> : <Loading />;

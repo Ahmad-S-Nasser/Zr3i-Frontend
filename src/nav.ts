@@ -27,6 +27,9 @@ export const NAV: Record<string, NavDef> = {
   'event-evidence': { label: 'nav.event-evidence', href: '#/event-evidence', permission: 'kernel:shared:read' },
   'my-farms': { label: 'nav.my-farms', href: '#/my-farms', permission: 'portfolio:farms:read' },
   consent: { label: 'nav.consent', href: '#/consent', permission: 'kernel:consents:read' },
+  users: { label: 'nav.users', href: '#/users', permission: 'kernel:users:manage' },
+  audit: { label: 'nav.audit', href: '#/audit', permission: 'kernel:audit:manage' },
+  'access-requests': { label: 'nav.access-requests', href: '#/access-requests', permission: 'platform:access-requests:manage' },
 };
 
 /** Ids that have a plain `#/<id>` page. Farms keeps its own routes (list, farm, parcel). */

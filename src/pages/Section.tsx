@@ -1,9 +1,14 @@
+import { AccessRequests } from './AccessRequests';
 import { AccountTypes } from './AccountTypes';
+import { AuditLog } from './AuditLog';
 import { BeingBuilt } from './BeingBuilt';
 import { Consent } from './Consent';
 import { Farmers } from './Farmers';
 import { Imports } from './Imports';
 import { MyFarms } from './MyFarms';
+import { Portfolio } from './Portfolio';
+import { Tenants } from './Tenants';
+import { Users } from './Users';
 import { Farms } from './Farms';
 import { Methodology } from './Methodology';
 import { Methods } from './Methods';
@@ -27,6 +32,16 @@ export function Section({ id, season }: { id: string; season: string | null }) {
       return <MyFarms />;
     case 'consent':
       return <Consent />;
+    case 'portfolio':
+      return <Portfolio />;
+    case 'users':
+      return <Users />;
+    case 'audit':
+      return <AuditLog />;
+    case 'tenants':
+      return <Tenants />;
+    case 'access-requests':
+      return <AccessRequests />;
     default:
       return <BeingBuilt id={id} />;
   }
