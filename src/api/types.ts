@@ -288,3 +288,71 @@ export interface AccessRequest {
   purpose: string;
   language: string;
 }
+
+export interface SizeClass {
+  key: string;
+  fromFeddan: number;
+  toFeddan: number | null;
+  parcels: number;
+  readable: number;
+  share: number;
+}
+
+export interface Readability {
+  classes: SizeClass[];
+  parcelsWithoutBoundary: number;
+}
+
+export interface FindingRow {
+  id: string;
+  season: string;
+  type: string;
+  status: string;
+  reason: string | null;
+  current: boolean;
+  supersedes: string | null;
+  declared: { crop: string | null; areaFeddan: number | null; sowingDate: string | null; source: string | null };
+  area: { measuredFeddan: number; gapFeddan: number; gapPercent: number; noisePercent: number; direction: string } | null;
+  crop: { scenesUsed: number; passesUsed: number; maxNdvi: number | null; rulesTested: string[]; observationIds: string[] } | null;
+  method: { id: string; version: number; state: string; parametersSha256: string };
+  cropRule: { source: string; configId: string | null; configVersion: number | null; sha256: string | null } | null;
+  boundary: { id: string; geometrySha256: string };
+  accuracyRef: string;
+  createdAt: string;
+}
+
+export interface ObservationRow {
+  sceneId: string;
+  sensingTime: string;
+  fullPixels: number;
+  usablePixels: number;
+  lostShare: number;
+  readable: boolean;
+  reason: string | null;
+  ndvi: { median: number; mean: number; min: number; max: number } | null;
+  pixelStackSha256: string | null;
+  method: { id: string; version: number; state: string };
+  reader: string;
+  attribution: string;
+}
+
+export interface Analysis {
+  season: string;
+  parcels: number;
+  verdicts: Record<string, number>;
+  scenesPerMonth: { month: string; scenes: number }[];
+  accuracy: string;
+}
+
+export interface AccuracyEntry {
+  accuracyRef: string;
+  methodId: string;
+  methodVersion: number;
+  findingType: string;
+  crop: string;
+  sizeClass: string;
+  currentFindings: number;
+  byStatus: Record<string, number>;
+  accuracyState: string;
+  accuracyValue: number | null;
+}

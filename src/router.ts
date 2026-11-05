@@ -10,6 +10,8 @@ export type Route =
   | { name: 'section'; id: string; season: string | null }
   | { name: 'dev-login' }
   | { name: 'request-access' }
+  | { name: 'parcel-evidence'; id: string; season: string | null }
+  | { name: 'parcel-imagery'; id: string; season: string | null }
   | { name: 'accept'; token: string | null }
   | { name: 'consent-link'; token: string }
   | { name: 'farms'; season: string | null }
@@ -31,6 +33,8 @@ export function parseHash(hash: string): Route {
   if (parts[0] === 'farms' && parts.length === 1) return { name: 'farms', season: query.get('season') };
   if (parts[0] === 'farms' && parts[2] === 'seasons' && parts.length === 4) return { name: 'farm', farmId: parts[1], season: parts[3] };
   if (parts.length === 1 && SECTION_IDS.includes(parts[0])) return { name: 'section', id: parts[0], season: query.get('season') };
+  if (parts[0] === 'parcels' && parts.length === 2) return { name: 'parcel-evidence', id: parts[1], season: query.get('season') };
+  if (parts[0] === 'parcels' && parts.length === 3 && parts[2] === 'imagery') return { name: 'parcel-imagery', id: parts[1], season: query.get('season') };
   if (parts[0] === 'parcel-seasons' && parts.length === 2) return { name: 'parcel', parcelSeasonId: parts[1] };
   return { name: 'not-found' };
 }
@@ -39,6 +43,8 @@ export const hrefs = {
   signIn: () => '#/sign-in',
   devLogin: () => '#/dev-login',
   requestAccess: () => '#/request-access',
+  parcelEvidence: (id: string, season?: string | null) => `#/parcels/${encodeURIComponent(id)}${season ? `?season=${encodeURIComponent(season)}` : ''}`,
+  parcelImagery: (id: string, season?: string | null) => `#/parcels/${encodeURIComponent(id)}/imagery${season ? `?season=${encodeURIComponent(season)}` : ''}`,
   farms: (season?: string) => (season ? `#/farms?season=${encodeURIComponent(season)}` : '#/farms'),
   farm: (farmId: string, season: string) => `#/farms/${encodeURIComponent(farmId)}/seasons/${encodeURIComponent(season)}`,
   parcel: (parcelSeasonId: string) => `#/parcel-seasons/${encodeURIComponent(parcelSeasonId)}`,

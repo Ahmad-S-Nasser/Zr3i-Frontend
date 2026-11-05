@@ -27,7 +27,7 @@ export function Shell({ route, children }: { route: Route; children: ReactNode }
   // The sidebar is the account type's preset, filtered by what this role may open.
   const items = (org?.navigation ?? []).filter((id) => id in NAV && (NAV[id].permission === null || can(org?.permissions ?? [], NAV[id].permission))).map((id) => ({ id, ...NAV[id] }));
   // Farm and parcel pages belong to Farms where the preset has it, and otherwise to Risk.
-  const active = route.name === 'section' ? route.id : route.name === 'farms' || route.name === 'farm' || route.name === 'parcel' ? (items.some((i) => i.id === 'farms') ? 'farms' : 'risk') : null;
+  const active = route.name === 'section' ? route.id : route.name === 'parcel-evidence' || route.name === 'parcel-imagery' ? 'parcels' : route.name === 'farms' || route.name === 'farm' || route.name === 'parcel' ? (items.some((i) => i.id === 'farms') ? 'farms' : 'risk') : null;
 
   const typeLabel = (lang === 'ar' ? org?.accountTypeLabelAr : org?.accountTypeLabelEn) ?? org?.accountType ?? '';
   const roleNames = (org?.roles ?? []).map((r) => (`role.${r.key}` in messages.en ? t(`role.${r.key}` as MessageKey) : r.name));

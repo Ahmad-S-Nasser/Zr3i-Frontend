@@ -8,6 +8,8 @@ import { Farms } from './pages/Farms';
 import { Section } from './pages/Section';
 import { AcceptInvitation } from './pages/AcceptInvitation';
 import { ConsentLink } from './pages/ConsentLink';
+import { ParcelEvidence } from './pages/ParcelEvidence';
+import { ParcelImagery } from './pages/ParcelImagery';
 import { ParcelRisk } from './pages/ParcelRisk';
 import { RequestAccess } from './pages/RequestAccess';
 import { SignIn } from './pages/SignIn';
@@ -51,6 +53,8 @@ export function App() {
     <Shell route={route}>
       {route.name === 'farms' && <Farms mode="farms" season={route.season} />}
       {route.name === 'farm' && <FarmRisk key={`${route.farmId}/${route.season}`} farmId={route.farmId} season={route.season} />}
+      {route.name === 'parcel-evidence' && <ParcelEvidence key={route.id} id={route.id} season={route.season} />}
+      {route.name === 'parcel-imagery' && <ParcelImagery key={route.id} id={route.id} season={route.season} />}
       {route.name === 'parcel' && <ParcelRisk key={route.parcelSeasonId} parcelSeasonId={route.parcelSeasonId} />}
       {route.name === 'section' && <Section key={route.id} id={route.id} season={route.season} />}
       {route.name === 'home' && <Loading />}

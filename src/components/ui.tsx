@@ -131,3 +131,13 @@ export function useCropName(): (crop: string | null | undefined) => string {
     return key in messages.en ? t(key as MessageKey) : crop;
   };
 }
+
+/** One verdict as an icon, a word and a colour (never colour alone). */
+export function VerdictPill({ status, reason }: { status: string | null | undefined; reason?: string | null }) {
+  const { t } = useLang();
+  if (!status) return <span className="muted">{t('ver.none')}</span>;
+  if (status === 'FLAGGED') return <span className="pill flagged"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1.5 11 10.5H1z" fill="currentColor" /></svg>{t('ver.flagged')}</span>;
+  if (status === 'PENDING') return <span className="pill pending"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1a5 5 0 0 0 0 10z" fill="currentColor" /><circle cx="6" cy="6" r="4.5" fill="none" stroke="currentColor" strokeWidth="1.2" /></svg>{t('ver.pending')}</span>;
+  if (status === 'NOT_ASSESSABLE') return <NotAssessable>{reason === 'below_resolution' ? t('ver.belowResolution') : t('ver.notAssessable')}</NotAssessable>;
+  return <span className="pill confirmed"><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="currentColor" /></svg>{t('ver.confirmed')}</span>;
+}

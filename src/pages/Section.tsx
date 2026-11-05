@@ -1,11 +1,14 @@
+import { Accuracy } from './Accuracy';
 import { AccessRequests } from './AccessRequests';
 import { AccountTypes } from './AccountTypes';
+import { Analysis } from './Analysis';
 import { AuditLog } from './AuditLog';
 import { BeingBuilt } from './BeingBuilt';
 import { Consent } from './Consent';
 import { Farmers } from './Farmers';
 import { Imports } from './Imports';
 import { MyFarms } from './MyFarms';
+import { Parcels } from './Parcels';
 import { Portfolio } from './Portfolio';
 import { Tenants } from './Tenants';
 import { Users } from './Users';
@@ -34,6 +37,12 @@ export function Section({ id, season }: { id: string; season: string | null }) {
       return <Consent />;
     case 'portfolio':
       return <Portfolio />;
+    case 'parcels':
+      return <Parcels season={season} />;
+    case 'analysis':
+      return <Analysis season={season} />;
+    case 'accuracy':
+      return <Accuracy />;
     case 'users':
       return <Users />;
     case 'audit':
