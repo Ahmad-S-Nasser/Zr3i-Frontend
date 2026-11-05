@@ -6,6 +6,7 @@ import { LangProvider } from './i18n/LangProvider';
 import './styles/tailwind.css';
 import './styles/tokens.css';
 import '../design/bundle.css';
+import './styles/app.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

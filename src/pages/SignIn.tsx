@@ -72,7 +72,7 @@ export function SignIn() {
   const codeComplete = digits.every((d) => d !== '');
 
   return (
-    <div className="-m-4 grid min-h-screen md:grid-cols-2">
+    <div className="grid min-h-screen md:grid-cols-2">
       <section className="flex flex-col justify-between bg-zr-sage p-8 text-zr-navy">
         <div>
           <p className="eyebrow">{t('brand.eyebrow')}</p>

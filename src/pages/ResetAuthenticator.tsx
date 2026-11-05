@@ -44,7 +44,7 @@ export function ResetAuthenticator({ token }: { token: string | null }) {
   }
 
   return (
-    <div className="-m-4 min-h-screen bg-ground">
+    <div className="min-h-screen bg-ground">
       <header className="flex items-center justify-between bg-zr-field px-6 py-3">
         <span dir="ltr" className="font-display text-2xl font-black text-zr-sage">{t('brand.wordmark')}</span>
         <LangToggle />

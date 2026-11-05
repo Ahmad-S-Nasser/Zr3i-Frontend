@@ -59,7 +59,7 @@ export function ConsentLink({ token }: { token: string }) {
   const open = offer?.status === 'pending';
 
   return (
-    <div className="-m-4 min-h-screen bg-ground">
+    <div className="min-h-screen bg-ground">
       <header className="flex items-center justify-between bg-zr-field px-4 py-3">
         <span dir="ltr" className="font-display text-xl font-black text-zr-sage">{t('brand.wordmark')}</span>
         <LangToggle />

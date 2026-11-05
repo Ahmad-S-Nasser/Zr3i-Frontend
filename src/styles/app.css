@@ -1,0 +1,215 @@
+/* Pages run edge to edge: the design bundle pads the body for its static boards, which shows as a pale frame around a real page. */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Depth and motion shared by the app's screens. Colours are all design-system tokens; the shadow is the ink colour at low strength. */
+:root {
+  --elevation-1: 0 1px 2px rgb(19 30 41 / 0.06), 0 1px 3px rgb(19 30 41 / 0.08);
+  --elevation-2: 0 4px 12px rgb(19 30 41 / 0.10), 0 2px 4px rgb(19 30 41 / 0.06);
+}
+
+.card {
+  box-shadow: var(--elevation-1);
+  transition: box-shadow 0.15s ease;
+}
+
+.zr-t tbody tr {
+  transition: background-color 0.12s ease;
+}
+
+.zr-t tbody tr:hover td {
+  background: var(--sunken);
+}
+
+.zr-btn {
+  transition: background-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.zr-btn:hover:not(:disabled) {
+  box-shadow: var(--elevation-1);
+}
+
+/* Sidebar: an icon beside every label, and a narrow mode that keeps only the icons. */
+.zr-nav a svg {
+  flex: none;
+  opacity: 0.9;
+}
+
+.zr-nav[data-narrow='true'] {
+  padding-inline: var(--space-2);
+}
+
+.zr-nav[data-narrow='true'] a {
+  justify-content: center;
+  padding: 0;
+}
+
+/* Top bar controls. The bar is the brand green, so these use the mist and sage tokens. */
+.zr-iconbtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--zr-mist);
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+.zr-iconbtn:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+
+.zr-badge {
+  position: absolute;
+  inset-block-start: 2px;
+  inset-inline-end: 2px;
+  min-width: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: var(--zr-amber);
+  color: var(--zr-navy);
+  font: 700 11px/18px var(--font-display);
+  text-align: center;
+}
+
+.zr-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--zr-sage);
+  color: var(--zr-navy);
+  font: 700 14px/1 var(--font-display);
+}
+
+.zr-pop {
+  position: relative;
+}
+
+.zr-pop-panel {
+  position: absolute;
+  inset-block-start: calc(100% + 6px);
+  inset-inline-end: 0;
+  z-index: 40;
+  min-width: 260px;
+  max-width: 340px;
+  margin: 0;
+  padding: var(--space-1) 0;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--elevation-2);
+}
+
+.zr-menu-title {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  font: 700 13px/20px var(--font-sans);
+  overflow-wrap: anywhere;
+}
+
+.zr-menu-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-block-start: 1px solid var(--line);
+  background: transparent;
+  color: var(--link);
+  font: 600 14px/20px var(--font-sans);
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.zr-menu-link:hover {
+  background: var(--sunken);
+}
+
+.zr-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: min(360px, 100%);
+  min-height: 40px;
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-md);
+  background: rgb(255 255 255 / 0.12);
+  color: var(--zr-mist);
+}
+
+.zr-search:focus-within {
+  background: rgb(255 255 255 / 0.2);
+}
+
+.zr-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font: 400 14px/20px var(--font-sans);
+}
+
+.zr-search input::placeholder {
+  color: var(--zr-mist);
+  opacity: 0.75;
+}
+
+.zr-search-list {
+  inset-inline: 0;
+  inset-inline-end: auto;
+  width: 100%;
+  min-width: 0;
+}
+
+.zr-search-list button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 500 14px/20px var(--font-sans);
+  text-align: start;
+  cursor: pointer;
+}
+
+.zr-search-list button:hover,
+.zr-search-list button.on {
+  background: var(--sunken);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .zr-t tbody tr,
+  .zr-btn,
+  .zr-iconbtn {
+    transition: none;
+  }
+}

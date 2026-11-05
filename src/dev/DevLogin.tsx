@@ -74,7 +74,7 @@ export default function DevLogin() {
   const types = data ? [...new Set(data.personas.map((p) => p.accountType))] : [];
 
   return (
-    <div className="-m-4 min-h-screen bg-ground">
+    <div className="min-h-screen bg-ground">
       <header className="flex flex-wrap items-center justify-between gap-3 bg-zr-field px-6 py-3 text-zr-mist">
         <span dir="ltr" className="font-display text-2xl font-black text-zr-sage">ZR3I</span>
         <div className="flex items-center gap-3">
