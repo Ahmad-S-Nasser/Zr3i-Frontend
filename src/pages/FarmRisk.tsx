@@ -1,5 +1,6 @@
 import type { FarmParcelRow, FarmSummary } from '../api/types';
 import { useAuth } from '../auth/AuthProvider';
+import { RequestReportButton } from '../components/RequestReport';
 import { ErrorLine, Kpi, Loading, MaturityBadge, MethodBanner, NotAssessable, Num, PageHeader, RiskBand, useCropName } from '../components/ui';
 import { fmt } from '../format';
 import { useApi } from '../hooks/useApi';
@@ -33,7 +34,7 @@ export function FarmRisk({ farmId, season }: { farmId: string; season: string })
 
   return (
     <>
-      <PageHeader crumb={t('farm.crumb', { org: org?.name ?? '', season: s.season })} title={t('farm.title', { name: s.farm.name })} actions={back} />
+      <PageHeader crumb={t('farm.crumb', { org: org?.name ?? '', season: s.season })} title={t('farm.title', { name: s.farm.name })} actions={<>{back}<RequestReportButton kind="farm_risk" subjectId={s.farm.id} season={s.season} label={t('rep.farm.report')} /></>} />
       <div className="flex flex-col gap-4">
         <MethodBanner method={s.method.id} />
         {s.friStale ? <div className="banner neutral" role="note"><span>{t('farm.stale')}</span></div> : null}

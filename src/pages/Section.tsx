@@ -12,6 +12,7 @@ import { MyFarms } from './MyFarms';
 import { Parcels } from './Parcels';
 import { Portfolio } from './Portfolio';
 import { Tenants } from './Tenants';
+import { Reports } from './Reports';
 import { Tranches } from './Tranches';
 import { Users } from './Users';
 import { Farms } from './Farms';
@@ -53,6 +54,8 @@ export function Section({ id, season }: { id: string; season: string | null }) {
       return <Tenants />;
     case 'tranches':
       return <Tranches />;
+    case 'reports':
+      return <Reports />;
     case 'event-evidence':
       return <EventEvidence />;
     case 'access-requests':

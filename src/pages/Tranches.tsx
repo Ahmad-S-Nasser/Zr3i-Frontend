@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { ApiError, api } from '../api/client';
 import type { FarmList, ParcelItem } from '../api/types';
 import { can, useAuth } from '../auth/AuthProvider';
+import { RequestReportButton } from '../components/RequestReport';
 import { ErrorLine, Loading, Num, PageHeader, VerdictPill } from '../components/ui';
 import { DEFAULT_SEASON } from '../config';
 import { fmt } from '../format';
@@ -44,7 +45,7 @@ export function Tranches() {
 
   return (
     <>
-      <PageHeader crumb={t('trn.crumb', { org: org?.name ?? '', season: current?.season ?? DEFAULT_SEASON })} title={t('trn.title')} />
+      <PageHeader crumb={t('trn.crumb', { org: org?.name ?? '', season: current?.season ?? DEFAULT_SEASON })} title={t('trn.title')} actions={current ? <RequestReportButton kind="tranche" subjectId={current.id} label={t('trn.report')} /> : undefined} />
       <div className="flex flex-col gap-4">
         {list.error ? <ErrorLine error={list.error} onRetry={list.reload} /> : null}
         {list.loading ? <Loading /> : null}
