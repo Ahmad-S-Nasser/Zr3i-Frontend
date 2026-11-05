@@ -41,7 +41,7 @@ export function SignIn() {
     setError(null);
     try {
       await verify(challenge, digits.join(''));
-      go(hrefs.farms());
+      go('#/');
     } catch (err) {
       setError(err instanceof ApiError ? err : new ApiError(0, 'network'));
       setDigits(Array(DIGITS).fill(''));

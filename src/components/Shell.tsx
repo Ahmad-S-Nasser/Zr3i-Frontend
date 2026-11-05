@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
 import { can, useAuth } from '../auth/AuthProvider';
+import { NAV } from '../nav';
 import { useLang } from '../i18n/LangProvider';
 import { messages, type MessageKey } from '../i18n/messages';
-import { hrefs, type Route } from '../router';
+import type { Route } from '../router';
 
 export function LangToggle() {
   const { lang, setLang, t } = useLang();
@@ -20,12 +21,17 @@ export function LangToggle() {
 
 /** Sidebar, header and one content area. The sidebar lists only what the signed-in role may open. */
 export function Shell({ route, children }: { route: Route; children: ReactNode }) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { me, org, setOrgId, signOut } = useAuth();
-  const farmsOpen = org !== null && can(org.permissions, 'portfolio:farms:read');
-  const typeKey = `accountType.${org?.accountType ?? ''}`;
-  const typeLabel = typeKey in messages.en ? t(typeKey as MessageKey) : (org?.accountType ?? '');
-  const inFarms = route.name === 'farms' || route.name === 'farm' || route.name === 'parcel';
+
+  // The sidebar is the account type's preset, filtered by what this role may open.
+  const items = (org?.navigation ?? []).filter((id) => id in NAV && (NAV[id].permission === null || can(org?.permissions ?? [], NAV[id].permission))).map((id) => ({ id, ...NAV[id] }));
+  // Farm and parcel pages belong to Farms where the preset has it, and otherwise to Risk.
+  const active = route.name === 'section' ? route.id : route.name === 'farms' || route.name === 'farm' || route.name === 'parcel' ? (items.some((i) => i.id === 'farms') ? 'farms' : 'risk') : null;
+
+  const typeLabel = (lang === 'ar' ? org?.accountTypeLabelAr : org?.accountTypeLabelEn) ?? org?.accountType ?? '';
+  const roleNames = (org?.roles ?? []).map((r) => (`role.${r.key}` in messages.en ? t(`role.${r.key}` as MessageKey) : r.name));
+  const label = [typeLabel, ...roleNames].filter(Boolean).join(' · ');
 
   return (
     <div className="-m-4 grid min-h-screen grid-cols-[var(--sidebar-w)_1fr] grid-rows-[auto_1fr]">
@@ -36,11 +42,11 @@ export function Shell({ route, children }: { route: Route; children: ReactNode }
           </div>
           <div className="rule mt-2" style={{ width: 48 }} />
         </div>
-        {farmsOpen ? (
-          <a href={hrefs.farms()} aria-current={inFarms ? 'page' : undefined}>
-            {t('nav.farms')}
+        {items.map((i) => (
+          <a key={i.id} href={i.href} aria-current={active === i.id ? 'page' : undefined}>
+            {t(i.label)}
           </a>
-        ) : null}
+        ))}
         <div className="mt-auto border-t border-zr-forest px-3 pt-4 text-xs">{t('brand.endorsement')}</div>
       </nav>
 
@@ -58,7 +64,7 @@ export function Shell({ route, children }: { route: Route; children: ReactNode }
           ) : null}
         </div>
         <div className="flex items-center gap-3 text-sm">
-          <span>{typeLabel}</span>
+          <span>{label}</span>
           <LangToggle />
           <button type="button" className="zr-btn" onClick={() => void signOut()}>
             {t('nav.signOut')}

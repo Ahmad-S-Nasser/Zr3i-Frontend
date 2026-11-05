@@ -4,6 +4,13 @@ export interface Organisation {
   id: string;
   name: string;
   accountType: string;
+  accountTypeLabelEn: string | null;
+  accountTypeLabelAr: string | null;
+  /** The account type's preset: where this organisation lands, and what its sidebar lists. */
+  homeView: string | null;
+  navigation: string[];
+  modules: string[];
+  roles: { key: string; name: string }[];
   permissions: string[];
 }
 

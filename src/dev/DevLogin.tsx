@@ -3,7 +3,7 @@ import { ApiError } from '../api/client';
 import { useAuth } from '../auth/AuthProvider';
 import { LangToggle } from '../components/Shell';
 import { ErrorLine } from '../components/ui';
-import { go, hrefs } from '../router';
+import { go } from '../router';
 import { totpNow } from './totp';
 
 // DEVELOPMENT ONLY. This page is reached only when import.meta.env.DEV is true (App.tsx), so it is compiled out of production builds.
@@ -63,7 +63,7 @@ export default function DevLogin() {
     try {
       const challenge = await begin(p.email, data.password);
       await verify(challenge, await totpNow(p.totpSecret));
-      go(hrefs.farms());
+      go('#/');
     } catch (e) {
       setError(e instanceof ApiError ? e : new ApiError(0, 'network'));
     } finally {
