@@ -8,6 +8,13 @@ import { useLang } from '../i18n/LangProvider';
 import type { MessageKey } from '../i18n/messages';
 import { hrefs } from '../router';
 
+// The order the methodology and the board list the components in (the stored result keeps them alphabetically).
+const COMPONENT_ORDER = ['water_security', 'climate_exposure', 'soil_and_land', 'yield_stability', 'management_quality', 'tenure_and_rights', 'peer_and_context'];
+const orderOf = (key: string) => {
+  const i = COMPONENT_ORDER.indexOf(key);
+  return i === -1 ? COMPONENT_ORDER.length : i;
+};
+
 /** Parcel risk page: the CRI, where it came from, and its components, with a what-if view that never changes the stored result. */
 export function ParcelRisk({ parcelSeasonId }: { parcelSeasonId: string }) {
   const { t } = useLang();
@@ -108,7 +115,7 @@ export function ParcelRisk({ parcelSeasonId }: { parcelSeasonId: string }) {
               </tr>
             </thead>
             <tbody>
-              {current.components.map((c) => {
+              {[...current.components].sort((a, b) => orderOf(a.key) - orderOf(b.key)).map((c) => {
                 const on = c.established && !off.has(c.key);
                 const contribution = on && view.weight > 0 && c.score !== null ? (c.score * c.weight) / view.weight : null;
                 const feature = c.feature === null ? '' : c.feature === 'yield_history' ? t('feature.yield_history') : `${c.feature}${c.featureValue === null ? '' : ' ' + fmt(c.featureValue)}`;
