@@ -1,28 +1,34 @@
-import { useLang } from './i18n/LangProvider';
+import { useEffect } from 'react';
+import { useAuth } from './auth/AuthProvider';
+import { Shell } from './components/Shell';
+import { Loading } from './components/ui';
+import { FarmRisk } from './pages/FarmRisk';
+import { Farms } from './pages/Farms';
+import { ParcelRisk } from './pages/ParcelRisk';
+import { SignIn } from './pages/SignIn';
+import { go, hrefs, useRoute } from './router';
 
 export function App() {
-  const { lang, setLang, t } = useLang();
+  const route = useRoute();
+  const { loading, me } = useAuth();
+  const signedIn = me !== null;
+
+  // Signed-out visitors go to sign-in; a signed-in user who lands on it goes to the farms.
+  useEffect(() => {
+    if (loading) return;
+    if (!signedIn && route.name !== 'sign-in') go(hrefs.signIn());
+    if (signedIn && route.name === 'sign-in') go(hrefs.farms());
+  }, [loading, signedIn, route.name]);
+
+  if (loading) return <Loading />;
+  if (!signedIn) return route.name === 'sign-in' ? <SignIn /> : <Loading />;
 
   return (
-    <main className="-m-4 min-h-screen bg-zr-sage text-zr-navy">
-      <header className="flex justify-end px-6 py-4">
-        <div role="group" aria-label={t('lang.toggle.label')} className="flex gap-2">
-          <button type="button" aria-pressed={lang === 'en'} onClick={() => setLang('en')} className="zr-chip">
-            {t('lang.toggle.en')}
-          </button>
-          <button type="button" aria-pressed={lang === 'ar'} onClick={() => setLang('ar')} className="zr-chip">
-            {t('lang.toggle.ar')}
-          </button>
-        </div>
-      </header>
-      <section className="mx-auto max-w-(--size-content-max) px-6 py-16">
-        <p className="eyebrow">{t('brand.eyebrow')}</p>
-        <h1 dir="ltr" className="mb-3 font-display text-[clamp(64px,12vw,144px)] leading-none font-black text-white">
-          {t('brand.wordmark')}
-        </h1>
-        <div className="rule" />
-        <p className="mt-4">{t('shell.status')}</p>
-      </section>
-    </main>
+    <Shell route={route}>
+      {route.name === 'farms' && <Farms season={route.season} />}
+      {route.name === 'farm' && <FarmRisk key={`${route.farmId}/${route.season}`} farmId={route.farmId} season={route.season} />}
+      {route.name === 'parcel' && <ParcelRisk key={route.parcelSeasonId} parcelSeasonId={route.parcelSeasonId} />}
+      {route.name === 'not-found' && <Farms season={null} />}
+    </Shell>
   );
 }
