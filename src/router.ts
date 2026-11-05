@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 export type Route =
   | { name: 'sign-in' }
+  | { name: 'dev-login' }
   | { name: 'farms'; season: string | null }
   | { name: 'farm'; farmId: string; season: string }
   | { name: 'parcel'; parcelSeasonId: string }
@@ -16,6 +17,7 @@ export function parseHash(hash: string): Route {
 
   if (parts.length === 0) return { name: 'farms', season: null };
   if (parts[0] === 'sign-in' && parts.length === 1) return { name: 'sign-in' };
+  if (import.meta.env.DEV && parts[0] === 'dev-login' && parts.length === 1) return { name: 'dev-login' };
   if (parts[0] === 'farms' && parts.length === 1) return { name: 'farms', season: query.get('season') };
   if (parts[0] === 'farms' && parts[2] === 'seasons' && parts.length === 4) return { name: 'farm', farmId: parts[1], season: parts[3] };
   if (parts[0] === 'parcel-seasons' && parts.length === 2) return { name: 'parcel', parcelSeasonId: parts[1] };
@@ -24,6 +26,7 @@ export function parseHash(hash: string): Route {
 
 export const hrefs = {
   signIn: () => '#/sign-in',
+  devLogin: () => '#/dev-login',
   farms: (season?: string) => (season ? `#/farms?season=${encodeURIComponent(season)}` : '#/farms'),
   farm: (farmId: string, season: string) => `#/farms/${encodeURIComponent(farmId)}/seasons/${encodeURIComponent(season)}`,
   parcel: (parcelSeasonId: string) => `#/parcel-seasons/${encodeURIComponent(parcelSeasonId)}`,

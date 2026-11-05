@@ -106,6 +106,11 @@ export function SignIn() {
                 {busy ? t('signin.working') : t('signin.submit')}
               </button>
               <p className="zr-hint m-0">{t('signin.invitation')}</p>
+              {import.meta.env.DEV ? (
+                <a className="zr-btn text self-start" href={hrefs.devLogin()}>
+                  Developer login
+                </a>
+              ) : null}
             </form>
           ) : (
             <form onSubmit={submitCode} noValidate className="flex flex-col gap-4">

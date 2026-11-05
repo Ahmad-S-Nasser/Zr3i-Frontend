@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { useAuth } from './auth/AuthProvider';
 import { Shell } from './components/Shell';
 import { Loading } from './components/ui';
@@ -8,6 +8,9 @@ import { ParcelRisk } from './pages/ParcelRisk';
 import { SignIn } from './pages/SignIn';
 import { go, hrefs, useRoute } from './router';
 
+// Development-only login page. import.meta.env.DEV is false in production builds, so this import and the page are removed from them.
+const DevLogin = import.meta.env.DEV ? lazy(() => import('./dev/DevLogin')) : null;
+
 export function App() {
   const route = useRoute();
   const { loading, me } = useAuth();
@@ -16,9 +19,17 @@ export function App() {
   // Signed-out visitors go to sign-in; a signed-in user who lands on it goes to the farms.
   useEffect(() => {
     if (loading) return;
-    if (!signedIn && route.name !== 'sign-in') go(hrefs.signIn());
+    if (!signedIn && route.name !== 'sign-in' && route.name !== 'dev-login') go(hrefs.signIn());
     if (signedIn && route.name === 'sign-in') go(hrefs.farms());
   }, [loading, signedIn, route.name]);
+
+  if (DevLogin && route.name === 'dev-login') {
+    return (
+      <Suspense fallback={<Loading />}>
+        <DevLogin />
+      </Suspense>
+    );
+  }
 
   if (loading) return <Loading />;
   if (!signedIn) return route.name === 'sign-in' ? <SignIn /> : <Loading />;

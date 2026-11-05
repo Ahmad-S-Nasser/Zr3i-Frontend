@@ -9,3 +9,6 @@ coverage/
 
 src/styles/theme.css
 docs/
+
+# Dev-only accounts (a password and authenticator secrets), written by tools/Zr3i.DevSeed in the backend repo.
+src/dev/devPersonas.json
