@@ -5,12 +5,14 @@ import { Analysis } from './Analysis';
 import { AuditLog } from './AuditLog';
 import { BeingBuilt } from './BeingBuilt';
 import { Consent } from './Consent';
+import { EventEvidence } from './EventEvidence';
 import { Farmers } from './Farmers';
 import { Imports } from './Imports';
 import { MyFarms } from './MyFarms';
 import { Parcels } from './Parcels';
 import { Portfolio } from './Portfolio';
 import { Tenants } from './Tenants';
+import { Tranches } from './Tranches';
 import { Users } from './Users';
 import { Farms } from './Farms';
 import { Methodology } from './Methodology';
@@ -49,6 +51,10 @@ export function Section({ id, season }: { id: string; season: string | null }) {
       return <AuditLog />;
     case 'tenants':
       return <Tenants />;
+    case 'tranches':
+      return <Tranches />;
+    case 'event-evidence':
+      return <EventEvidence />;
     case 'access-requests':
       return <AccessRequests />;
     default:
