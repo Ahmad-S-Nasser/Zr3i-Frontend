@@ -5,6 +5,7 @@ import { Loading } from './components/ui';
 import { FarmRisk } from './pages/FarmRisk';
 import { BeingBuilt } from './pages/BeingBuilt';
 import { Farms } from './pages/Farms';
+import { Section } from './pages/Section';
 import { ParcelRisk } from './pages/ParcelRisk';
 import { SignIn } from './pages/SignIn';
 import { homeHref } from './nav';
@@ -40,10 +41,10 @@ export function App() {
 
   return (
     <Shell route={route}>
-      {route.name === 'farms' && <Farms season={route.season} />}
+      {route.name === 'farms' && <Farms mode="farms" season={route.season} />}
       {route.name === 'farm' && <FarmRisk key={`${route.farmId}/${route.season}`} farmId={route.farmId} season={route.season} />}
       {route.name === 'parcel' && <ParcelRisk key={route.parcelSeasonId} parcelSeasonId={route.parcelSeasonId} />}
-      {route.name === 'section' && <BeingBuilt key={route.id} id={route.id} />}
+      {route.name === 'section' && <Section key={route.id} id={route.id} season={route.season} />}
       {route.name === 'home' && <Loading />}
       {route.name === 'not-found' && org && <BeingBuilt id="" />}
     </Shell>

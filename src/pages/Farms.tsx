@@ -10,10 +10,14 @@ import { go, hrefs } from '../router';
 
 const PAGE = 50;
 
-/** The organisation's farms for one season, in the order they were added. Nothing here ranks farms by risk. */
-export function Farms({ season: routeSeason }: { season: string | null }) {
+/**
+ * The organisation's farms in the order they were added; nothing here ranks farms by risk.
+ * "farms" lists the facts (region, parcels, area). "risk" is the same list for a season with each farm's FRI, under the method banner.
+ */
+export function Farms({ season: routeSeason, mode }: { season: string | null; mode: 'farms' | 'risk' }) {
   const { t } = useLang();
   const { org } = useAuth();
+  const risk = mode === 'risk';
   const season = routeSeason ?? DEFAULT_SEASON;
   const [draft, setDraft] = useState(season);
   const [items, setItems] = useState<FarmListItem[]>([]);
@@ -29,7 +33,8 @@ export function Farms({ season: routeSeason }: { season: string | null }) {
     setLoading(true);
     setError(null);
     try {
-      const q = new URLSearchParams({ pageSize: String(PAGE), season });
+      const q = new URLSearchParams({ pageSize: String(PAGE) });
+      if (risk) q.set('season', season);
       if (cursor) q.set('cursor', cursor);
       const page = await api<FarmList>(`/api/organisations/${org.id}/farms?${q}`, { signal });
       setItems((prev) => (replace ? page.items : [...prev, ...page.items]));
@@ -51,29 +56,31 @@ export function Farms({ season: routeSeason }: { season: string | null }) {
     void load(null, true, controller.signal);
     return () => controller.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [org?.id, season]);
+  }, [org?.id, season, mode]);
 
   function applySeason(e: FormEvent) {
     e.preventDefault();
-    go(hrefs.farms(draft.trim()));
+    go(`#/risk?season=${encodeURIComponent(draft.trim())}`);
   }
 
   return (
     <>
-      <PageHeader crumb={t('farms.crumb', { org: org?.name ?? '', season })} title={t('farms.title')} />
+      <PageHeader crumb={risk ? t('farms.crumb', { org: org?.name ?? '', season }) : (org?.name ?? '')} title={risk ? t('risk.title') : t('farms.title')} />
       <div className="flex flex-col gap-4">
-        <MethodBanner method={method} />
+        {risk ? <MethodBanner method={method} /> : null}
 
-        <form onSubmit={applySeason} className="flex items-end gap-3">
-          <div className="zr-field">
-            <label htmlFor="season">{t('farms.season')}</label>
-            <input id="season" dir="ltr" className="zr-in !w-40" value={draft} onChange={(e) => setDraft(e.target.value)} />
-            <span className="zr-hint">{t('farms.seasonHint')}</span>
-          </div>
-          <button type="submit" className="zr-btn" disabled={!draft.trim() || draft.trim() === season}>
-            {t('farms.apply')}
-          </button>
-        </form>
+        {risk ? (
+          <form onSubmit={applySeason} className="flex items-end gap-3">
+            <div className="zr-field">
+              <label htmlFor="season">{t('farms.season')}</label>
+              <input id="season" dir="ltr" className="zr-in !w-40" value={draft} onChange={(e) => setDraft(e.target.value)} />
+              <span className="zr-hint">{t('farms.seasonHint')}</span>
+            </div>
+            <button type="submit" className="zr-btn" disabled={!draft.trim() || draft.trim() === season}>
+              {t('farms.apply')}
+            </button>
+          </form>
+        ) : null}
 
         {error ? <ErrorLine error={error} onRetry={() => void load(null, true)} /> : null}
 
@@ -89,7 +96,7 @@ export function Farms({ season: routeSeason }: { season: string | null }) {
                 <th>{t('col.region')}</th>
                 <th className="num !font-display">{t('col.parcels')}</th>
                 <th className="num !font-display">{t('col.area')}</th>
-                <th className="num !font-display">{t('col.fri')}</th>
+                {risk ? <th className="num !font-display">{t('col.fri')}</th> : null}
               </tr>
             </thead>
             <tbody>
@@ -103,16 +110,18 @@ export function Farms({ season: routeSeason }: { season: string | null }) {
                   <td>{f.governorate ?? t('common.none')}</td>
                   <td className="num">{fmt(f.parcelCount, 0)}</td>
                   <td className="num">{fmt(f.areaFeddan)}</td>
-                  <td className="num">
-                    {f.fri ? (
-                      <span className="inline-flex flex-col items-end gap-1">
-                        <Num>{fmt(f.fri.value)}</Num>
-                        <MaturityBadge />
-                      </span>
-                    ) : (
-                      <span className="muted font-sans">{t('farms.noFri')}</span>
-                    )}
-                  </td>
+                  {risk ? (
+                    <td className="num">
+                      {f.fri ? (
+                        <span className="inline-flex flex-col items-end gap-1">
+                          <Num>{fmt(f.fri.value)}</Num>
+                          <MaturityBadge />
+                        </span>
+                      ) : (
+                        <span className="muted font-sans">{t('farms.noFri')}</span>
+                      )}
+                    </td>
+                  ) : null}
                 </tr>
               ))}
             </tbody>

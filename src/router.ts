@@ -7,7 +7,7 @@ import { SECTION_IDS } from './nav';
 export type Route =
   | { name: 'sign-in' }
   | { name: 'home' }
-  | { name: 'section'; id: string }
+  | { name: 'section'; id: string; season: string | null }
   | { name: 'dev-login' }
   | { name: 'farms'; season: string | null }
   | { name: 'farm'; farmId: string; season: string }
@@ -24,7 +24,7 @@ export function parseHash(hash: string): Route {
   if (import.meta.env.DEV && parts[0] === 'dev-login' && parts.length === 1) return { name: 'dev-login' };
   if (parts[0] === 'farms' && parts.length === 1) return { name: 'farms', season: query.get('season') };
   if (parts[0] === 'farms' && parts[2] === 'seasons' && parts.length === 4) return { name: 'farm', farmId: parts[1], season: parts[3] };
-  if (parts.length === 1 && SECTION_IDS.includes(parts[0])) return { name: 'section', id: parts[0] };
+  if (parts.length === 1 && SECTION_IDS.includes(parts[0])) return { name: 'section', id: parts[0], season: query.get('season') };
   if (parts[0] === 'parcel-seasons' && parts.length === 2) return { name: 'parcel', parcelSeasonId: parts[1] };
   return { name: 'not-found' };
 }
