@@ -106,6 +106,9 @@ export function SignIn() {
                 {busy ? t('signin.working') : t('signin.submit')}
               </button>
               <p className="zr-hint m-0">{t('signin.invitation')}</p>
+              <a className="zr-btn text self-start" href={hrefs.requestAccess()}>
+                {t('req.link')}
+              </a>
               {import.meta.env.DEV ? (
                 <a className="zr-btn text self-start" href={hrefs.devLogin()}>
                   Developer login

@@ -102,7 +102,7 @@ export interface FarmSummary {
   friStale: boolean;
   awcri: number | null;
   adjustmentsSum: number;
-  parcelCount: number;
+  parcelCount: number | null;
   totalAreaFeddan: number;
   seasonsOnFile: number | null;
   parcels: FarmParcelRow[];
@@ -114,7 +114,7 @@ export interface FarmListItem {
   name: string;
   governorate: string | null;
   markaz: string | null;
-  parcelCount: number;
+  parcelCount: number | null;
   areaFeddan: number;
   fri: { value: number; createdAt: string; maturity: string; label: string; method: { id: string; version: number } } | null;
 }
@@ -123,4 +123,104 @@ export interface FarmList {
   season: string | null;
   nextCursor: string | null;
   items: FarmListItem[];
+}
+
+export interface ImportBatch {
+  id: string;
+  status: string;
+  fileName: string;
+  sizeBytes: number;
+  totalRows: number;
+  validRows: number;
+  invalidRows: number;
+  created: number;
+  updated: number;
+  unchanged: number;
+  failed: number;
+  fileErrors: string[];
+  createdAt: string;
+  progress: { done: number; total: number };
+  jobStatus: string | null;
+}
+
+export interface ImportErrorRow {
+  line: number;
+  parcelExternalId: string;
+  farmExternalId: string;
+  errors: { field: string; code: string }[];
+}
+
+export interface ImportErrors {
+  fileErrors: string[];
+  rows: ImportErrorRow[];
+  nextCursor: string | null;
+}
+
+export interface Farmer {
+  id: string;
+  name: string;
+  phone: string | null;
+  language: string;
+  externalId: string | null;
+  accountOrganisationId: string | null;
+}
+
+export interface Grant {
+  grantId: string;
+  role: 'owner' | 'grantee';
+  status: 'active' | 'scheduled' | 'expired' | 'withdrawn';
+  farmerId: string;
+  granteeTenantId: string;
+  ownerName: string | null;
+  granteeName: string | null;
+  purpose: string;
+  validFrom: string;
+  validUntil: string;
+  grantedAt: string;
+  withdrawnAt: string | null;
+  channel: string;
+}
+
+export interface ParcelItem {
+  id: string;
+  label: string;
+  farmId: string;
+  farmName: string;
+  crop: string | null;
+  declaredAreaFeddan: number | null;
+  measuredAreaFeddan: number | null;
+  finding: { status: string; reason: string | null; gapPercent: number | null; noisePercent: number | null; direction: string | null } | null;
+}
+
+export interface ParcelList {
+  season: string | null;
+  nextCursor: string | null;
+  items: ParcelItem[];
+}
+
+export interface ConsentOffer {
+  requester: string;
+  grantee: string;
+  farmer: string;
+  language: string;
+  purpose: string;
+  validFrom: string;
+  validUntil: string;
+  parcelCount: number | null;
+  dataCategories: string[];
+  status: string;
+}
+
+export interface SignupField {
+  key: string;
+  labelEn: string;
+  labelAr: string;
+  required: boolean;
+}
+
+export interface SelfSignupType {
+  key: string;
+  labelEn: string;
+  labelAr: string;
+  signupFields: SignupField[];
 }

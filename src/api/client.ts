@@ -37,7 +37,7 @@ export function setUnauthorizedHandler(handler: (() => void) | null): void {
   onUnauthorized = handler;
 }
 
-export async function api<T>(path: string, init: { method?: string; body?: unknown; signal?: AbortSignal } = {}): Promise<T> {
+export async function api<T>(path: string, init: { method?: string; body?: unknown; raw?: Blob; signal?: AbortSignal } = {}): Promise<T> {
   const token = getToken();
   let response: Response;
   try {
@@ -46,9 +46,10 @@ export async function api<T>(path: string, init: { method?: string; body?: unkno
       signal: init.signal,
       headers: {
         ...(init.body !== undefined ? { 'Content-Type': 'application/json' } : {}),
+        ...(init.raw ? { 'Content-Type': init.raw.type || 'application/octet-stream' } : {}),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      body: init.body !== undefined ? JSON.stringify(init.body) : undefined,
+      body: init.raw ?? (init.body !== undefined ? JSON.stringify(init.body) : undefined),
     });
   } catch (e) {
     if (e instanceof DOMException && e.name === 'AbortError') throw e;
@@ -67,4 +68,22 @@ export async function api<T>(path: string, init: { method?: string; body?: unkno
 
   if (response.status === 401 && token && code !== 'invalid_credentials') onUnauthorized?.();
   throw new ApiError(response.status, code);
+}
+
+/** Downloads a file from a signed-in route (the browser cannot add the bearer token to a plain link). */
+export async function download(path: string, fileName: string): Promise<void> {
+  const token = getToken();
+  let response: Response;
+  try {
+    response = await fetch(API_BASE + path, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+  } catch {
+    throw new ApiError(0, 'network');
+  }
+  if (!response.ok) throw new ApiError(response.status, 'unknown');
+  const url = URL.createObjectURL(await response.blob());
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  URL.revokeObjectURL(url);
 }

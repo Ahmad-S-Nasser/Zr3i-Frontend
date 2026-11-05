@@ -1,5 +1,9 @@
 import { AccountTypes } from './AccountTypes';
 import { BeingBuilt } from './BeingBuilt';
+import { Consent } from './Consent';
+import { Farmers } from './Farmers';
+import { Imports } from './Imports';
+import { MyFarms } from './MyFarms';
 import { Farms } from './Farms';
 import { Methodology } from './Methodology';
 import { Methods } from './Methods';
@@ -15,6 +19,14 @@ export function Section({ id, season }: { id: string; season: string | null }) {
       return <AccountTypes />;
     case 'methods':
       return <Methods />;
+    case 'imports':
+      return <Imports />;
+    case 'farmers':
+      return <Farmers />;
+    case 'my-farms':
+      return <MyFarms />;
+    case 'consent':
+      return <Consent />;
     default:
       return <BeingBuilt id={id} />;
   }
