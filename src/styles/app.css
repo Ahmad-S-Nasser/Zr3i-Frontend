@@ -205,6 +205,52 @@ body {
   background: var(--sunken);
 }
 
+.zr-search-group {
+  margin: 0;
+  padding: var(--space-2) var(--space-3) var(--space-1);
+  color: var(--ink-muted);
+  font: 700 11px/16px var(--font-display);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+[dir='rtl'] .zr-search-group {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.zr-notes {
+  max-height: 360px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+}
+
+.zr-notes li a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  border-block-start: 1px solid var(--line);
+  color: var(--ink);
+  font: 400 14px/20px var(--font-sans);
+  text-decoration: none;
+}
+
+.zr-notes li a:hover {
+  background: var(--sunken);
+}
+
+.zr-notes li.unread a {
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--zr-sage);
+}
+
+[dir='rtl'] .zr-notes li.unread a {
+  box-shadow: inset -3px 0 0 var(--zr-sage);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .card,
   .zr-t tbody tr,

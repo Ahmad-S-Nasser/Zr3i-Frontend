@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { can, useAuth } from '../auth/AuthProvider';
 import { NAV } from '../nav';
 import { Icon, type IconName } from './Icon';
-import { ReportBell, ScreenSearch, UserMenu } from './TopBar';
+import { NotificationBell, ScreenSearch, UserMenu } from './TopBar';
 import { useLang } from '../i18n/LangProvider';
 import { messages, type MessageKey } from '../i18n/messages';
 import type { Route } from '../router';
@@ -69,7 +69,7 @@ export function Shell({ route, children }: { route: Route; children: ReactNode }
         </div>
         <div className="flex items-center gap-3 text-sm">
           <span className="hidden text-sm font-bold tracking-wide text-zr-amber md:inline">{org ? org.name : ''}</span>
-          <ReportBell />
+          <NotificationBell />
           <LangToggle />
           <UserMenu roleLabel={label} />
         </div>
