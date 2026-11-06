@@ -70,6 +70,28 @@ export async function api<T>(path: string, init: { method?: string; body?: unkno
   throw new ApiError(response.status, code);
 }
 
+/** A file from a signed-in route as a Blob, for showing an image (the browser cannot add the bearer token to an image link). */
+export async function fetchBlob(path: string): Promise<Blob> {
+  const token = getToken();
+  let response: Response;
+  try {
+    response = await fetch(API_BASE + path, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+  } catch {
+    throw new ApiError(0, 'network');
+  }
+  if (!response.ok) {
+    let code = 'unknown';
+    try {
+      const body = (await response.json()) as { error?: string };
+      if (body.error) code = body.error;
+    } catch {
+      /* no JSON body */
+    }
+    throw new ApiError(response.status, code);
+  }
+  return response.blob();
+}
+
 /** Downloads a file from a signed-in route (the browser cannot add the bearer token to a plain link). */
 export async function download(path: string, fileName: string): Promise<void> {
   const token = getToken();

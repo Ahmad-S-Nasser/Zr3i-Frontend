@@ -13,6 +13,7 @@ import { Parcels } from './Parcels';
 import { Portfolio } from './Portfolio';
 import { Tenants } from './Tenants';
 import { Reports } from './Reports';
+import { Satellite } from './Satellite';
 import { Tranches } from './Tranches';
 import { Users } from './Users';
 import { Farms } from './Farms';
@@ -56,6 +57,8 @@ export function Section({ id, season }: { id: string; season: string | null }) {
       return <Tranches />;
     case 'reports':
       return <Reports />;
+    case 'satellite':
+      return <Satellite />;
     case 'event-evidence':
       return <EventEvidence />;
     case 'access-requests':

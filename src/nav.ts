@@ -23,6 +23,7 @@ export const NAV: Record<string, NavDef> = {
   'account-types': { label: 'nav.account-types', href: '#/account-types', permission: 'platform:account-types:read' },
   methods: { label: 'nav.methods', href: '#/methods', permission: 'platform:methods:read' },
   tranches: { label: 'nav.tranches', href: '#/tranches', permission: 'kernel:shared:read' },
+  satellite: { label: 'nav.satellite', href: '#/satellite', permission: 'kernel:imagery:read' },
   reports: { label: 'nav.reports', href: '#/reports', permission: 'kernel:reports:read' },
   'event-evidence': { label: 'nav.event-evidence', href: '#/event-evidence', permission: 'kernel:shared:read' },
   'my-farms': { label: 'nav.my-farms', href: '#/my-farms', permission: 'portfolio:farms:read' },

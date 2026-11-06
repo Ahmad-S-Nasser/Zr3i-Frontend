@@ -1,16 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { ApiError, api } from '../api/client';
 import type { ObservationRow, ParcelItem } from '../api/types';
-import { useAuth } from '../auth/AuthProvider';
+import { can, useAuth } from '../auth/AuthProvider';
 import { ErrorLine, Loading, MethodBanner, Num, PageHeader, VerdictPill } from '../components/ui';
 import { DEFAULT_SEASON } from '../config';
 import { fmt, fmtUtc } from '../format';
 import { useApi } from '../hooks/useApi';
+import { useBlobUrl } from '../hooks/useBlobUrl';
 import { useLang } from '../i18n/LangProvider';
+import { hasMessage } from '../i18n/messages';
 import { hrefs } from '../router';
 
 /**
- * Imagery for one parcel. The platform does not draw image chips yet, so this page shows what each scene read from the stored observations:
- * the NDVI by date, which scenes were usable, and the details of the selected scene. Field photos are not stored yet.
+ * Imagery for one parcel: the NDVI by date, which scenes were usable, the details of the selected scene, and the pictures cut from that scene
+ * (true colour and NDVI, with the declared and measured outlines). Field photos are not stored yet.
  */
 export function ParcelImagery({ id, season: routeSeason }: { id: string; season: string | null }) {
   const { t } = useLang();
@@ -35,7 +38,6 @@ export function ParcelImagery({ id, season: routeSeason }: { id: string; season:
       <PageHeader crumb={`${org?.name ?? ''} · ${p.farmName}`} title={t('img.title', { label: p.label })} actions={back} />
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3"><VerdictPill status={p.finding?.status} reason={p.finding?.reason} /></div>
-        <div className="banner synthetic" role="note"><span>{t('img.placeholder')}</span></div>
         {observations.error ? <ErrorLine error={observations.error} onRetry={observations.reload} /> : null}
         {observations.loading ? <Loading /> : null}
 
@@ -74,6 +76,8 @@ export function ParcelImagery({ id, season: routeSeason }: { id: string; season:
             </aside>
           </div>
         ) : null}
+
+        {sel && org ? <Chips parcelId={id} orgId={org.id} sceneId={sel.sceneId} readable={sel.readable} reason={sel.reason} /> : null}
 
         <section className="card" aria-labelledby="photos">
           <h2 id="photos" className="title">{t('img.photos')}</h2>
@@ -121,5 +125,109 @@ function NdviChart({ rows, selected, onSelect }: { rows: ObservationRow[]; selec
       )}
       <button type="button" className="zr-btn text !min-h-0 !px-0" onClick={() => setAsTable(!asTable)}>{asTable ? t('ana.chart') : t('ana.table')}</button>
     </>
+  );
+}
+
+interface Chip {
+  id: string;
+  sceneId: string;
+  kind: string;
+  widthPx: number;
+  heightPx: number;
+  attribution: string;
+  sha256: string;
+}
+
+/**
+ * The pictures cut from the selected scene around this parcel. A parcel too small to test, or a scene that lost too much of it, has none and
+ * the page says why (below resolution is never shown as "no crop"). Anyone who may write can ask for them; the worker makes them in the background.
+ */
+function Chips({ parcelId, orgId, sceneId, readable, reason }: { parcelId: string; orgId: string; sceneId: string; readable: boolean; reason: string | null }) {
+  const { t } = useLang();
+  const { org } = useAuth();
+  const base = `/api/organisations/${orgId}/parcels/${encodeURIComponent(parcelId)}/chips`;
+  const list = useApi<Chip[]>(base);
+  const canMake = org !== null && can(org.permissions, 'kernel:imagery:write');
+  const [asked, setAsked] = useState<string | null>(null);
+  const [error, setError] = useState<ApiError | null>(null);
+  const chips = (list.data ?? []).filter((c) => c.sceneId === sceneId);
+  const colour = chips.find((c) => c.kind === 'true_colour');
+  const ndvi = chips.find((c) => c.kind === 'ndvi');
+  const waiting = asked === sceneId && !(colour && ndvi);
+  const reloadList = list.reload;
+
+  // While the worker is making them, look again every few seconds (for at most two minutes).
+  useEffect(() => {
+    if (!waiting) return;
+    const timer = window.setInterval(reloadList, 3000);
+    const stop = window.setTimeout(() => setAsked(null), 120000);
+    return () => { window.clearInterval(timer); window.clearTimeout(stop); };
+  }, [waiting, reloadList]);
+
+  async function make() {
+    setError(null);
+    try {
+      await api(base, { method: 'POST', body: { sceneId } });
+      setAsked(sceneId);
+      reloadList();
+    } catch (e) {
+      setError(e instanceof ApiError ? e : new ApiError(0, 'network'));
+    }
+  }
+
+  const why = reason === 'below_resolution' ? 'chip.none.below' : !readable ? 'chip.none.lost' : null;
+
+  return (
+    <section className="card" aria-labelledby="chips">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 id="chips" className="title">{t('chip.title')}</h2>
+        {!why && !(colour && ndvi) && canMake ? <button type="button" className="zr-btn primary" disabled={waiting} onClick={() => void make()}>{t(waiting ? 'chip.making' : 'chip.make')}</button> : null}
+      </div>
+      {list.error ? <ErrorLine error={list.error} onRetry={list.reload} /> : null}
+      {error ? <ErrorLine error={error} /> : null}
+      {why ? <p className="muted m-0">{t(why)}</p> : null}
+      {!why && !(colour && ndvi) && !waiting ? <p className="muted m-0">{t('chip.none.yet')}</p> : null}
+      {waiting ? <p className="muted m-0" role="status">{t('chip.making')}</p> : null}
+      {colour && ndvi ? (
+        <>
+          <div className="mt-3 grid gap-4 sm:grid-cols-2">
+            <ChipImage orgId={orgId} parcelId={parcelId} chip={colour} label={t('chip.trueColour')} />
+            <ChipImage orgId={orgId} parcelId={parcelId} chip={ndvi} label={t('chip.ndvi')} />
+          </div>
+          <ChipLegend />
+          <p className="muted mt-2 mb-0 text-xs">{colour.attribution}</p>
+        </>
+      ) : null}
+    </section>
+  );
+}
+
+function ChipImage({ orgId, parcelId, chip, label }: { orgId: string; parcelId: string; chip: Chip; label: string }) {
+  const { t } = useLang();
+  const img = useBlobUrl(`/api/organisations/${orgId}/parcels/${encodeURIComponent(parcelId)}/chips/${encodeURIComponent(chip.id)}/image`);
+  return (
+    <figure className="m-0">
+      <figcaption className="mb-1 text-sm font-semibold">{label}</figcaption>
+      {img.loading ? <Loading /> : null}
+      {img.error ? <p className="zr-err m-0">{hasMessage(`error.${img.error.code}`) ? t(`error.${img.error.code}` as never) : t('error.unknown')}</p> : null}
+      {img.url ? <img src={img.url} alt={label} width={chip.widthPx} height={chip.heightPx} className="h-auto w-full rounded-md border border-line" style={{ imageRendering: 'pixelated', maxWidth: chip.widthPx }} /> : null}
+    </figure>
+  );
+}
+
+/** What the colours mean. The swatches are the same design tokens the pictures are drawn with. */
+function ChipLegend() {
+  const { t } = useLang();
+  const swatch = (css: string, extra?: React.CSSProperties) => <i aria-hidden="true" className="inline-block h-3 w-5 rounded-sm border border-line align-middle" style={{ background: css, ...extra }} />;
+  return (
+    <ul className="m-0 mt-3 grid list-none gap-1 p-0 text-sm sm:grid-cols-2">
+      <li>{swatch('var(--img-boundary)', { boxShadow: '0 0 0 2px var(--zr-navy)' })} {t('chip.legend.declared')}</li>
+      <li>{swatch('transparent', { borderColor: 'var(--img-measured)', borderStyle: 'dashed', borderWidth: 2 })} {t('chip.legend.measured')}</li>
+      <li>{swatch('var(--img-ndvi-low)')} {t('chip.legend.low')}</li>
+      <li>{swatch('var(--img-ndvi-mid)')} {t('chip.legend.mid')}</li>
+      <li>{swatch('var(--img-ndvi-high)')} {t('chip.legend.high')}</li>
+      <li>{swatch('repeating-linear-gradient(135deg, var(--not-assessable-bg) 0 3px, var(--not-assessable) 3px 4px)')} {t('chip.legend.unusable')}</li>
+      <li className="muted sm:col-span-2">{t('chip.pixel')}</li>
+    </ul>
   );
 }
