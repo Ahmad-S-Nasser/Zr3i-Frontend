@@ -278,6 +278,12 @@ export interface Tenant {
   members: number;
   farms: number;
   parcels: number;
+  /** The organisation's account-type preset, so the provider can open it read-only with the same sidebar its people see. */
+  accountTypeLabelEn: string | null;
+  accountTypeLabelAr: string | null;
+  homeView: string | null;
+  navigation: string[];
+  isSynthetic: boolean;
 }
 
 export interface AccessRequest {

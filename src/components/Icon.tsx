@@ -21,6 +21,7 @@ const PATHS = {
   consent: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z M8.5 12l2.5 2.5 4.5-5',
   'access-requests': 'M4 13l3-8h10l3 8v6H4z M4 13h5l1 2h4l1-2h5',
   satellite: 'M7 4l5 5-3 3-5-5z M15 12l5 5-3 3-5-5z M9.5 11.5l3 3 M3 21c5.5 0 9-3.5 9-9',
+  usage: 'M4 16a8 8 0 0116 0 M12 16l4-5 M4 20h16',
   search: 'M11 18a7 7 0 100-14 7 7 0 000 14z M21 21l-5-5',
   bell: 'M6 16v-5a6 6 0 1112 0v5l2 2H4z M10 21h4',
   menu: 'M4 6h16 M4 12h16 M4 18h16',

@@ -19,6 +19,7 @@ export const NAV: Record<string, NavDef> = {
   risk: { label: 'nav.risk', href: '#/risk', permission: 'risk:indicators:read' },
   imports: { label: 'nav.imports', href: '#/imports', permission: 'kernel:imports:read' },
   methodology: { label: 'nav.methodology', href: '#/methodology', permission: null },
+  usage: { label: 'nav.usage', href: '#/usage', permission: 'platform:usage:read' },
   tenants: { label: 'nav.tenants', href: '#/tenants', permission: 'platform:tenants:read' },
   'account-types': { label: 'nav.account-types', href: '#/account-types', permission: 'platform:account-types:read' },
   methods: { label: 'nav.methods', href: '#/methods', permission: 'platform:methods:read' },

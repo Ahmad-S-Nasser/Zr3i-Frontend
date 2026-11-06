@@ -1,4 +1,5 @@
 import type { Tenant } from '../api/types';
+import { canOversee, useAuth } from '../auth/AuthProvider';
 import { ErrorLine, Loading, Num, PageHeader } from '../components/ui';
 import { fmt, fmtUtc } from '../format';
 import { useApi } from '../hooks/useApi';
@@ -8,6 +9,8 @@ import { hasMessage } from '../i18n/messages';
 /** Every customer organisation, for the Zr3i provider: its account type, modules, members, farms and parcels. Read-only. */
 export function Tenants() {
   const { t } = useLang();
+  const { org, startViewing } = useAuth();
+  const mayOpen = org !== null && canOversee(org.permissions);
   const { data, error, loading, reload } = useApi<Tenant[]>('/api/platform/organisations');
   const typeName = (key: string) => (hasMessage(`accountType.${key}`) ? t(`accountType.${key}` as never) : key);
 
@@ -31,6 +34,7 @@ export function Tenants() {
                   <th className="num !font-display">{t('tnt.col.farms')}</th>
                   <th className="num !font-display">{t('tnt.col.parcels')}</th>
                   <th>{t('tnt.col.created')}</th>
+                  {mayOpen ? <th /> : null}
                 </tr>
               </thead>
               <tbody>
@@ -43,6 +47,7 @@ export function Tenants() {
                     <td className="num">{fmt(o.farms, 0)}</td>
                     <td className="num">{fmt(o.parcels, 0)}</td>
                     <td className="font-mono text-xs"><Num>{fmtUtc(o.createdAt).slice(0, 10)}</Num></td>
+                    {mayOpen ? <td><button type="button" className="zr-btn whitespace-nowrap" onClick={() => startViewing(o)}>{t('use.open')}</button></td> : null}
                   </tr>
                 ))}
               </tbody>

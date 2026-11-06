@@ -24,7 +24,7 @@ export function LangToggle() {
 /** Sidebar, header and one content area. The sidebar lists only what the signed-in role may open. */
 export function Shell({ route, children }: { route: Route; children: ReactNode }) {
   const { t, lang } = useLang();
-  const { org } = useAuth();
+  const { org, viewing, stopViewing } = useAuth();
 
   // The sidebar is the account type's preset, filtered by what this role may open.
   const items = (org?.navigation ?? []).filter((id) => id in NAV && (NAV[id].permission === null || can(org?.permissions ?? [], NAV[id].permission))).map((id) => ({ id, ...NAV[id] }));
@@ -76,6 +76,14 @@ export function Shell({ route, children }: { route: Route; children: ReactNode }
       </header>
 
       <main className="bg-ground px-6 py-6">
+        {viewing ? (
+          <div className="banner neutral mb-4" role="note">
+            <span className="flex flex-1 flex-wrap items-center justify-between gap-3">
+              <b>{t('view.banner', { org: viewing.name })}</b>
+              <button type="button" className="zr-btn" onClick={stopViewing}>{t('view.exit')}</button>
+            </span>
+          </div>
+        ) : null}
         {org?.isSynthetic ? <div className="banner synthetic mb-4" role="note"><span>{t('syn.bar')}</span></div> : null}
         <div className="mx-auto max-w-(--size-content-max)">{children}</div>
       </main>
