@@ -11,6 +11,7 @@ import { ResetAuthenticator } from './pages/ResetAuthenticator';
 import { ConsentLink } from './pages/ConsentLink';
 import { ParcelEvidence } from './pages/ParcelEvidence';
 import { ParcelImagery } from './pages/ParcelImagery';
+import { SceneDetail } from './pages/SceneDetail';
 import { ParcelRisk } from './pages/ParcelRisk';
 import { RequestAccess } from './pages/RequestAccess';
 import { SignIn } from './pages/SignIn';
@@ -57,6 +58,7 @@ export function App() {
       {route.name === 'farm' && <FarmRisk key={`${route.farmId}/${route.season}`} farmId={route.farmId} season={route.season} />}
       {route.name === 'parcel-evidence' && <ParcelEvidence key={route.id} id={route.id} season={route.season} />}
       {route.name === 'parcel-imagery' && <ParcelImagery key={route.id} id={route.id} season={route.season} />}
+      {route.name === 'scene' && <SceneDetail key={route.sceneId} sceneId={route.sceneId} />}
       {route.name === 'parcel' && <ParcelRisk key={route.parcelSeasonId} parcelSeasonId={route.parcelSeasonId} />}
       {route.name === 'section' && <Section key={route.id} id={route.id} season={route.season} />}
       {route.name === 'home' && <Loading />}

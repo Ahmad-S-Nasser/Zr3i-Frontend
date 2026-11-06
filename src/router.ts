@@ -12,6 +12,7 @@ export type Route =
   | { name: 'request-access' }
   | { name: 'parcel-evidence'; id: string; season: string | null }
   | { name: 'parcel-imagery'; id: string; season: string | null }
+  | { name: 'scene'; sceneId: string }
   | { name: 'accept'; token: string | null }
   | { name: 'reset-authenticator'; token: string | null }
   | { name: 'consent-link'; token: string }
@@ -35,6 +36,7 @@ export function parseHash(hash: string): Route {
   if (parts[0] === 'farms' && parts.length === 1) return { name: 'farms', season: query.get('season') };
   if (parts[0] === 'farms' && parts[2] === 'seasons' && parts.length === 4) return { name: 'farm', farmId: parts[1], season: parts[3] };
   if (parts.length === 1 && SECTION_IDS.includes(parts[0])) return { name: 'section', id: parts[0], season: query.get('season') };
+  if (parts[0] === 'satellite' && parts[1] === 'scenes' && parts.length === 3) return { name: 'scene', sceneId: parts[2] };
   if (parts[0] === 'parcels' && parts.length === 2) return { name: 'parcel-evidence', id: parts[1], season: query.get('season') };
   if (parts[0] === 'parcels' && parts.length === 3 && parts[2] === 'imagery') return { name: 'parcel-imagery', id: parts[1], season: query.get('season') };
   if (parts[0] === 'parcel-seasons' && parts.length === 2) return { name: 'parcel', parcelSeasonId: parts[1] };
@@ -49,6 +51,7 @@ export const hrefs = {
   parcelImagery: (id: string, season?: string | null) => `#/parcels/${encodeURIComponent(id)}/imagery${season ? `?season=${encodeURIComponent(season)}` : ''}`,
   farms: (season?: string) => (season ? `#/farms?season=${encodeURIComponent(season)}` : '#/farms'),
   farm: (farmId: string, season: string) => `#/farms/${encodeURIComponent(farmId)}/seasons/${encodeURIComponent(season)}`,
+  scene: (sceneId: string) => `#/satellite/scenes/${encodeURIComponent(sceneId)}`,
   parcel: (parcelSeasonId: string) => `#/parcel-seasons/${encodeURIComponent(parcelSeasonId)}`,
 };
 

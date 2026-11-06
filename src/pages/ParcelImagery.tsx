@@ -128,7 +128,7 @@ function NdviChart({ rows, selected, onSelect }: { rows: ObservationRow[]; selec
   );
 }
 
-interface Chip {
+export interface Chip {
   id: string;
   sceneId: string;
   kind: string;
@@ -202,7 +202,7 @@ function Chips({ parcelId, orgId, sceneId, readable, reason }: { parcelId: strin
   );
 }
 
-function ChipImage({ orgId, parcelId, chip, label }: { orgId: string; parcelId: string; chip: Chip; label: string }) {
+export function ChipImage({ orgId, parcelId, chip, label }: { orgId: string; parcelId: string; chip: Chip; label: string }) {
   const { t } = useLang();
   const img = useBlobUrl(`/api/organisations/${orgId}/parcels/${encodeURIComponent(parcelId)}/chips/${encodeURIComponent(chip.id)}/image`);
   return (

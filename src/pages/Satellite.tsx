@@ -3,6 +3,7 @@ import { ApiError, api } from '../api/client';
 import { can, useAuth } from '../auth/AuthProvider';
 import { ErrorLine, Kpi, Loading, Num, PageHeader } from '../components/ui';
 import { fmt, fmtUtc } from '../format';
+import { hrefs } from '../router';
 import { useApi } from '../hooks/useApi';
 import { useLang } from '../i18n/LangProvider';
 
@@ -192,7 +193,7 @@ export function Satellite() {
                     {rows.map((r) => (
                       <tr key={r.sceneId}>
                         <td className="font-mono text-xs"><Num>{fmtUtc(r.sensingTime).slice(0, 10)}</Num></td>
-                        <td className="font-mono text-xs"><Num>{r.sceneId}</Num><div className="muted"><Num>{r.tile}</Num></div></td>
+                        <td className="font-mono text-xs"><a className="text-link underline" href={hrefs.scene(r.sceneId)}><Num>{r.sceneId}</Num></a><div className="muted"><Num>{r.tile}</Num></div></td>
                         <td className="num"><Num>{fmt(r.cloudCover, 0)}%</Num></td>
                         <td className="num"><Num>{r.parcelsUnder}</Num></td>
                         <td className="num"><Num>{r.observed}</Num></td>
